@@ -1,0 +1,15 @@
+begin
+	label loop;
+	integer size, val, max, min, count;
+	input => size;
+	input => val => max => min;
+	1 => count;
+
+	loop:
+	input => val;
+	if val < min then val => min fi;
+	if val > max then val => max fi;
+	count + 1 => count;
+	if count < size then goto loop fi
+end.
+$

@@ -1,0 +1,9 @@
+begin end output integer label
+if then else fi goto
+123		2314
+=>
+this line is identifier test
+( ) < > =
++ - * /
+, : ; 
+idtest
