@@ -4,6 +4,8 @@
 
 extern Token next_symbol;
 
+extern queue<int> left_parse;
+
 void getNextSymbol();
 
 // Terminal procedure

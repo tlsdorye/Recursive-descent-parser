@@ -2,6 +2,8 @@
 
 Token next_symbol;
 
+queue<int> left_parse;
+
 void getNextSymbol()
 {
 	next_symbol = buffer.front();

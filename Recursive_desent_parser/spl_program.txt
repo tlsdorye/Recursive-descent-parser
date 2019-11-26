@@ -6,10 +6,10 @@ begin
 	1 => count;
 
 	loop:
-	input => val;
-	if val < min then val => min fi;
-	if val > max then val => max fi;
-	count + 1 => count;
-	if count < size then goto loop fi
-end.
+		input => val;
+		if val < min then val => min fi;
+		if val > max then val => max fi;
+		count + 1 => count;
+		if count < size then goto loop fi
+end .
 $
