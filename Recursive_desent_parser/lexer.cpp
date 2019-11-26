@@ -5,17 +5,17 @@ queue<Token> buffer;
 map<string, function<Token(string)>> regex_to_token =
 {
 	{ "[ \t\n]", [](string text)->Token {return Token(TokenType::EMPTY, text); } },
-	{ "begin", [](string text)->Token {return Token(TokenType::BEGIN, text); } },
-	{ "end", [](string text)->Token {return Token(TokenType::END, text); } },
-	{ "input", [](string text)->Token {return Token(TokenType::INPUT, text); } },
-	{ "output", [](string text)->Token {return Token(TokenType::OUTPUT, text); } },
-	{ "label", [](string text)->Token {return Token(TokenType::LABEL, text); } },
-	{ "integer", [](string text)->Token {return Token(TokenType::INTEGER, text); } },
-	{ "goto", [](string text)->Token {return Token(TokenType::GOTO, text); } },
-	{ "if", [](string text)->Token {return Token(TokenType::IF, text); } },
-	{ "then", [](string text)->Token {return Token(TokenType::THEN, text); } },
-	{ "else", [](string text)->Token {return Token(TokenType::ELSE, text); } },
-	{ "fi", [](string text)->Token {return Token(TokenType::FI, text); } },
+	{ "(begin)", [](string text)->Token {return Token(TokenType::BEGIN, text); } },
+	{ "(end)", [](string text)->Token {return Token(TokenType::END, text); } },
+	{ "(input)", [](string text)->Token {return Token(TokenType::INPUT, text); } },
+	{ "(output)", [](string text)->Token {return Token(TokenType::OUTPUT, text); } },
+	{ "(label)", [](string text)->Token {return Token(TokenType::LABEL, text); } },
+	{ "(integer)", [](string text)->Token {return Token(TokenType::INTEGER, text); } },
+	{ "(goto)", [](string text)->Token {return Token(TokenType::GOTO, text); } },
+	{ "(if)", [](string text)->Token {return Token(TokenType::IF, text); } },
+	{ "(then)", [](string text)->Token {return Token(TokenType::THEN, text); } },
+	{ "(else)", [](string text)->Token {return Token(TokenType::ELSE, text); } },
+	{ "(fi)", [](string text)->Token {return Token(TokenType::FI, text); } },
 	{ "\\,", [](string text)->Token {return Token(TokenType::COMMA, text); } },
 	{ "\\:", [](string text)->Token {return Token(TokenType::COLON, text); } },
 	{ "\\;", [](string text)->Token {return Token(TokenType::SEMICOLON, text); } },
@@ -31,6 +31,7 @@ map<string, function<Token(string)>> regex_to_token =
 	{ "\\*", [](string text)->Token {return Token(TokenType::MUL, text); } },
 	{ "\\/", [](string text)->Token {return Token(TokenType::DIV, text); } },
 	{ "[0-9]+", [](string text)->Token {return Token(TokenType::NUMBER, text); } },
+	{ "[a-zA-Z]+[a-zA-Z0-9]*", [](string text)->Token {return Token(TokenType::IDENTIFIER, text); } },
 	{ "\\$", [](string text)->Token {return Token(TokenType::END_OF_TOKEN, text); } }
 };
 
@@ -64,17 +65,7 @@ void Matching(string line)
 				break;
 			}
 		}
-		if (!matched)
-		{
-			regex id_regex("[a-zA-Z]+[a-zA-Z0-9]*");
-			if (regex_search(line, match_result, id_regex) && match_result.prefix() == "")
-			{
-				buffer.push(Token(TokenType::IDENTIFIER, match_result[0]));
-				line = match_result.suffix();
-				matched = true;
-			}
-			else throw Error(Token(), "NO MATCHING");
-		}
+		if (!matched) throw Error(Token(), "NO MATCHING");
 	}
 }
 
