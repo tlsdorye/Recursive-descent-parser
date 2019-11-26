@@ -125,9 +125,10 @@
     <ClCompile Include="token.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="spl_grammar.txt" />
+    <Text Include="EBNF_grammar.txt" />
     <Text Include="lexer_test.txt" />
     <Text Include="spl_program.txt" />
+    <Text Include="BNF_grammar.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="error.h" />

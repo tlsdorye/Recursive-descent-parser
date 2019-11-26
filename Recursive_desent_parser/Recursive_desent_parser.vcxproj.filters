@@ -38,14 +38,17 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="spl_grammar.txt">
-      <Filter>소스 파일\grammar</Filter>
-    </Text>
     <Text Include="lexer_test.txt">
       <Filter>소스 파일\test</Filter>
     </Text>
     <Text Include="spl_program.txt">
       <Filter>소스 파일\test</Filter>
+    </Text>
+    <Text Include="EBNF_grammar.txt">
+      <Filter>소스 파일\grammar</Filter>
+    </Text>
+    <Text Include="BNF_grammar.txt">
+      <Filter>소스 파일\grammar</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>
