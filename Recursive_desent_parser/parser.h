@@ -1,6 +1,7 @@
 #pragma once
 #include "token.h"
 #include "lexer.h"
+#include <queue>
 
 extern Token next_symbol;
 

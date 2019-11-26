@@ -202,7 +202,7 @@ void pIdentifier()
 //<spl_program>		::= <block> '.'
 void pSplProgram()
 {
-	cout << 1 << "\n";
+	left_parse.push(1);
 	pBlock();
 	pDot();
 }
@@ -210,7 +210,7 @@ void pSplProgram()
 //<block>			:: = 'begin' { <dcl> ';' } <st_list> 'end'
 void pBlock()
 {
-	cout << 2 << "\n";
+	left_parse.push(2);
 	pBegin();
 	while (next_symbol.getTokenType() == TokenType::LABEL
 		|| next_symbol.getTokenType() == TokenType::INTEGER)

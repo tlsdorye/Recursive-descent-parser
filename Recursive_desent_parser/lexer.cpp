@@ -44,7 +44,7 @@ void Lexing(const string filepath)
 		while (getline(reader, line))
 			Matching(line);
 	}
-	else throw Error(Token(), "FILE NOT OPEN");
+	else throw Error("Failed to open file");
 }
 
 void Matching(string line)
@@ -65,7 +65,7 @@ void Matching(string line)
 				break;
 			}
 		}
-		if (!matched) throw Error(Token(), "NO MATCHING");
+		if (!matched) throw Error("No token matched in lexer");
 	}
 }
 
