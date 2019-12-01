@@ -199,7 +199,9 @@ void pIdentifier()
 	else throw Error(next_symbol, "IDENTIFIER");
 }
 
-//<spl_program>		::= <block> '.'
+/*
+1 : <spl_program>	::= <block> '.'
+*/
 void pSplProgram()
 {
 	left_parse.push(1);
@@ -207,77 +209,122 @@ void pSplProgram()
 	pDot();
 }
 
-//<block>			:: = 'begin' { <dcl> ';' } <st_list> 'end'
+/*
+2 : <block>			::= 'begin' <A> <st_list> 'end'
+3 : <A>				::= <dcl> ';' <A>
+4 :					  | e
+*/
 void pBlock()
 {
+	bool flag = false;
 	left_parse.push(2);
 	pBegin();
 	while (next_symbol.getTokenType() == TokenType::LABEL
 		|| next_symbol.getTokenType() == TokenType::INTEGER)
 	{
+		flag = true;
+		left_parse.push(3);
 		pDcl();
 		pSemicolon();
 	}
+	if(!flag) left_parse.push(4);
 	pStList();
 	pEnd();
 }
 
-//<dcl>				:: = ('label' | 'integer') <id> { ',' <id> }
+/*
+5 : <dcl>			::= 'label' <id> <B>
+6 :					  | 'integer' <id> <B>
+7 : <B>				::= ',' <id>
+8 :					  | e
+*/
 void pDcl()
 {
-	cout << 3 << "\n";
-	if (next_symbol.getTokenType() == TokenType::LABEL
-		|| next_symbol.getTokenType() == TokenType::INTEGER)
+	bool flag = false;
+	if (next_symbol.getTokenType() == TokenType::LABEL)
+	{
+		left_parse.push(5);
 		getNextSymbol();
-	else throw Error(next_symbol, "DCL");
+	}
+	else if (next_symbol.getTokenType() == TokenType::INTEGER)
+	{
+		left_parse.push(6);
+		getNextSymbol();
+	}
+	else throw Error(next_symbol, "LABEL or INTEGER");
 
 	pIdentifier();
 	while (next_symbol.getTokenType() == TokenType::COMMA)
 	{
+		flag = true;
+		left_parse.push(7);
 		getNextSymbol();
 		pIdentifier();
 	}
+	if(!flag) left_parse.push(8);
 }
 
-//<st_list>			:: = <st> { ',' <st> }
+/*
+9 : <st_list>		::= <st> <C>
+10: <C>				::= ',' <st> <C>
+11:					  | e
+*/
 void pStList()
 {
-	cout << 4 << "\n";
+	bool flag = false;
+	left_parse.push(9);
 	pSt();
 	while (next_symbol.getTokenType() == TokenType::SEMICOLON)
 	{
+		flag = true;
+		left_parse.push(10);
 		getNextSymbol();
 		pSt();
 	}
+	if(!flag) left_parse.push(11);
 }
 
-//<st>				:: = [<id> ':'] <statement>
+/*
+12: <st>			::= <id> ':' <statement>
+13:					  | <statement>
+*/
 void pSt()
 {
-	cout << 5 << "\n";
+	bool flag = false;
 	// statement 의 assignment 의 first가 id가 올수 있으므로 2개까지 봐야함 --> LL(2)로
 	if (next_symbol.getTokenType() == TokenType::IDENTIFIER && buffer.front().getTokenType() == TokenType::COLON)
 	{
+		flag = true;
+		left_parse.push(12);
 		getNextSymbol();
 		getNextSymbol();
 	}
-	//getNextSymbol();
+	if(!flag) left_parse.push(13);
 	pStatement();
 }
 
-//<statement>		:: = <assignment> | <goto_st> | <if_st> | <write_st> | <block>
+/*
+14: <statement>		::= <assignment>
+15:					  | <goto_st>
+16:					  | <if_st>
+17:					  | <write_st>
+18:					  | <block>
+*/
 void pStatement()
 {
-	cout << 6 << "\n";
 	if (next_symbol.getTokenType() == TokenType::INPUT
 		|| next_symbol.getTokenType() == TokenType::IDENTIFIER
 		|| next_symbol.getTokenType() == TokenType::NUMBER
 		|| next_symbol.getTokenType() == TokenType::OPEN_PAREN)
-		pAssignment();
-	else if (next_symbol.getTokenType() == TokenType::GOTO) pGotoStatement();
-	else if (next_symbol.getTokenType() == TokenType::IF) pIfStatement();
-	else if (next_symbol.getTokenType() == TokenType::OUTPUT) pWriteStatement();
-	else if (next_symbol.getTokenType() == TokenType::BEGIN) pBlock();
+		left_parse.push(14), pAssignment();
+	else if (next_symbol.getTokenType() == TokenType::GOTO) 
+		left_parse.push(15), pGotoStatement();
+	else if (next_symbol.getTokenType() == TokenType::IF) 
+		left_parse.push(16), pIfStatement();
+	else if (next_symbol.getTokenType() == TokenType::OUTPUT) 
+		left_parse.push(17), pWriteStatement();
+	else if (next_symbol.getTokenType() == TokenType::BEGIN) 
+		left_parse.push(18), pBlock();
 	else throw Error(next_symbol, "STATEMENT");
 }
 
