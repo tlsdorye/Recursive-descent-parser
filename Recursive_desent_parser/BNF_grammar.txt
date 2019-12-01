@@ -7,7 +7,7 @@
 7 : <B>				::= ',' <id>
 8 :					  | e
 9 : <st_list>		::= <st> <C>
-10: <C>				::= ',' <st> <C>
+10: <C>				::= ';' <st> <C>
 11:					  | e
 12: <st>			::= <id> ':' <statement>
 13:					  | <statement>
@@ -20,24 +20,27 @@
 20: <D>				::= '=>' <id> <D>
 21:					  | e
 22: <goto_st>		::= 'goto' <id>
-23: <if_st>			::= 'if' <condition> 'then' <st_list> 'fi'
-24:					  | 'if' <condition> 'then' <st_list> 'else' <st_list> 'fi'
-25: <write_st>		::= 'output' '(' <exp> <E> ')'
-26: <E>				::= ',' <exp> <E>
-27:					  | e
-28: <condition>		::= <exp> <F> <exp>
-29: <F>				::= '<'
-30:					  | '>'
-31:					  | '='
-32: <exp>			::= <term> <G>
-33: <G>				::= '+' <term> <G>
-34:					  | '-' <term> <G>
-35:					  | e
-36: <term>			::= <factor> <H>
-37: <H>				::= '*' <factor> <H>
-38:					  | '/' <factor> <H>
-39:					  | e
-40: <factor>		::= 'input
-41:					  | <id>
-42:					  | <number>
-43:					  | '(' <exp> ')'
+23: <if_st>			::= 'if' <condition> 'then' <st_list> <else> 'fi'
+24: <else>			::= 'else' <st_list>
+25:					  | e
+
+
+26: <write_st>		::= 'output' '(' <exp> <E> ')'
+27: <E>				::= ',' <exp> <E>
+28:					  | e
+29: <condition>		::= <exp> <F> <exp>
+30: <F>				::= '<'
+31:					  | '>'
+32:					  | '='
+33: <exp>			::= <term> <G>
+34: <G>				::= '+' <term> <G>
+35:					  | '-' <term> <G>
+36:					  | e
+37: <term>			::= <factor> <H>
+38: <H>				::= '*' <factor> <H>
+39:					  | '/' <factor> <H>
+40:					  | e
+41: <factor>		::= 'input
+42:					  | <id>
+43:					  | <number>
+44:					  | '(' <exp> ')'

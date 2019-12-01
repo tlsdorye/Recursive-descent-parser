@@ -11,11 +11,14 @@ int main()
 	{
 		pSplProgram();
 		if (next_symbol.getTokenType() == TokenType::END_OF_TOKEN)
+		{
 			cout << "ACCEPT\n";
+			cout << toStringLeftParse(false);
+		}
 		else throw Error(next_symbol, "MAIN");
 	}
 	catch (Error error)
 	{
-		cout << error.error_message << "\n";
+		error.PrintErrorMessage();
 	}
 }

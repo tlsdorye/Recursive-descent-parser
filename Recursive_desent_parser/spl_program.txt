@@ -11,5 +11,5 @@ begin
 		if val > max then val => max fi;
 		count + 1 => count;
 		if count < size then goto loop fi
-eend .
+end .
 $

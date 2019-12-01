@@ -7,6 +7,8 @@ extern Token next_symbol;
 
 extern queue<int> left_parse;
 
+string toStringLeftParse(bool error);
+
 void getNextSymbol();
 
 // Terminal procedure

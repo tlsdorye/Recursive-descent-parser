@@ -4,6 +4,28 @@ Token next_symbol;
 
 queue<int> left_parse;
 
+string toStringLeftParse(bool error)
+{
+	string result = "";
+	result += "left_parse:\t";
+	int count = 0, curr;
+	while (!left_parse.empty())
+	{
+		curr = left_parse.front();
+		result += " " + to_string(curr);
+		left_parse.pop();
+		count++;
+		if (count > 10 && !left_parse.empty())
+		{
+			count = 0;
+			result += " ->\n\t\t";
+		}
+	}
+	if(error) result += " / (error_point)\n";
+	else result += "\n";
+	return result;
+}
+
 void getNextSymbol()
 {
 	next_symbol = buffer.front();
@@ -266,7 +288,7 @@ void pDcl()
 
 /*
 9 : <st_list>		::= <st> <C>
-10: <C>				::= ',' <st> <C>
+10: <C>				::= ';' <st> <C>
 11:					  | e
 */
 void pStList()
@@ -328,101 +350,170 @@ void pStatement()
 	else throw Error(next_symbol, "STATEMENT");
 }
 
-// <assignment>		::= <exp> '=>' <id> { '=>' <id> }
+/*
+19:	<assignment>	::= <exp> '=>' <id> <D>
+20: <D>				::= '=>' <id> <D>
+21:					  | e
+*/
 void pAssignment()
 {
-	cout << 7 << "\n";
+	bool flag = false;
+	left_parse.push(19);
 	pExpr();
 	pAssign();
 	pIdentifier();
 	while (next_symbol.getTokenType() == TokenType::ASSIGN)
 	{
+		flag = true;
+		left_parse.push(20);
 		getNextSymbol();
 		pIdentifier();
 	}
+	if (!flag) left_parse.push(21);
 }
 
-//<goto_st>			:: = 'goto' <id>
+/*
+22: <goto_st>		::= 'goto' <id>
+*/
 void pGotoStatement()
 {
-	cout << 8 << "\n";
+	left_parse.push(22);
 	pGoto();
 	pIdentifier();
 }
 
-//<if_st>			::= 'if' <condition> 'then' <st_list> [ 'else' <st_list> ] 'fi'
+/*
+23: <if_st>			::= 'if' <condition> 'then' <st_list> <else> 'fi'
+24: <else>			::= 'else' <st_list>
+25:					  | e
+*/
 void pIfStatement()
 {
-	cout << 9 << "\n";
+	bool flag = false;
+	left_parse.push(23);
 	pIf();
 	pCondition();
 	pThen();
 	pStList();
-	if (next_symbol.getTokenType() == TokenType::ELSE) pStList();
+	if (next_symbol.getTokenType() == TokenType::ELSE)
+	{
+		flag = true;
+		left_parse.push(24);
+		pStList();
+	}
+	if (!flag) left_parse.push(25);
 	pFi();
 }
 
-//<write_st>		::= 'output' '(' <exp> { ',' <exp> } ')'
+/*
+26: <write_st>		::= 'output' '(' <exp> <E> ')'
+27: <E>				::= ',' <exp> <E>
+28:					  | e
+*/
 void pWriteStatement()
 {
-	cout << 10 << "\n";
+	bool flag = false;
+	left_parse.push(26);
 	pOutput();
 	pOpenParen();
 	pExpr();
-	while (next_symbol.getTokenType() == TokenType::COMMA) pExpr();
+	while (next_symbol.getTokenType() == TokenType::COMMA)
+	{
+		flag = true;
+		left_parse.push(27);
+		pExpr();
+	}
+	if (!flag) left_parse.push(28);
 	pCloseParen();
 }
 
-//<condition>		:: = <exp> ('<' | '>' | '=') <exp>
+/*
+29: <condition>		::= <exp> <F> <exp>
+30: <F>				::= '<'
+31:					  | '>'
+32:					  | '='
+*/
 void pCondition()
 {
-	cout << 11 << "\n";
+	left_parse.push(29);
 	pExpr();
-	if (next_symbol.getTokenType() == TokenType::LESS
-		|| next_symbol.getTokenType() == TokenType::MORE
-		|| next_symbol.getTokenType() == TokenType::EQ)
-		getNextSymbol();
+	if (next_symbol.getTokenType() == TokenType::LESS)
+		left_parse.push(30);
+	else if (next_symbol.getTokenType() == TokenType::MORE)
+		left_parse.push(31);
+	else if (next_symbol.getTokenType() == TokenType::EQ)
+		left_parse.push(32);
 	else throw Error(next_symbol, "CONDITION");
+	getNextSymbol();
 	pExpr();
 }
 
-//<exp>				:: = <term> { ('+' | '-') <term> }
+/*
+33: <exp>			::= <term> <G>
+34: <G>				::= '+' <term> <G>
+35:					  | '-' <term> <G>
+36:					  | e
+*/
 void pExpr()
 {
-	cout << 12 << "\n";
+	bool flag = false;
+	left_parse.push(33);
 	pTerm();
 	while (next_symbol.getTokenType() == TokenType::ADD
 		|| next_symbol.getTokenType() == TokenType::SUB)
 	{
+		flag = true;
+		if (next_symbol.getTokenType() == TokenType::ADD)
+			left_parse.push(34);
+		else left_parse.push(35);
 		getNextSymbol();
 		pTerm();
 	}
+	if (!flag) left_parse.push(36);
 }
 
-//<term>			:: = <factor> { ('*' | '/') <factor> }
+/*
+37: <term>			::= <factor> <H>
+38: <H>				::= '*' <factor> <H>
+39:					  | '/' <factor> <H>
+40:					  | e
+*/
 void pTerm()
 {
-	cout << 13 << "\n";
+	bool flag = false;
+	left_parse.push(37);
 	pFactor();
 	while (next_symbol.getTokenType() == TokenType::MUL
 		|| next_symbol.getTokenType() == TokenType::DIV)
 	{
+		flag = true;
+		if (next_symbol.getTokenType() == TokenType::MUL)
+			left_parse.push(38);
+		else left_parse.push(39);
 		getNextSymbol();
 		pFactor();
 	}
+	if (!flag) left_parse.push(40);
 }
 
-//<factor>			:: = 'input' | <id> | <number> | '(' <exp> ')'
+/*
+41: <factor>		::= 'input
+42:					  | <id>
+43:					  | <number>
+44:					  | '(' <exp> ')'
+*/
 void pFactor()
 {
-	cout << 14 << "\n";
-	if (next_symbol.getTokenType() == TokenType::INPUT
-		|| next_symbol.getTokenType() == TokenType::IDENTIFIER
-		|| next_symbol.getTokenType() == TokenType::NUMBER
-		)
-		getNextSymbol();
+	if (next_symbol.getTokenType() == TokenType::INPUT)
+		left_parse.push(41), getNextSymbol();
+	else if (next_symbol.getTokenType() == TokenType::IDENTIFIER)
+		left_parse.push(42), getNextSymbol();
+	else if (next_symbol.getTokenType() == TokenType::NUMBER)
+		left_parse.push(43), getNextSymbol();
 	else if (next_symbol.getTokenType() == TokenType::OPEN_PAREN)
 	{
+		left_parse.push(44);
+		getNextSymbol();
 		pExpr();
 		pCloseParen();
 	}
