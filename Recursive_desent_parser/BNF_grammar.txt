@@ -23,8 +23,6 @@
 23: <if_st>			::= 'if' <condition> 'then' <st_list> <else> 'fi'
 24: <else>			::= 'else' <st_list>
 25:					  | e
-
-
 26: <write_st>		::= 'output' '(' <exp> <E> ')'
 27: <E>				::= ',' <exp> <E>
 28:					  | e

@@ -69,7 +69,7 @@ void Matching(string line)
 	}
 }
 
-void TextLexing(const string filepath)
+void TestLexing(const string filepath)
 {
 	Lexing(filepath);
 	cout << buffer.size() << "\n";

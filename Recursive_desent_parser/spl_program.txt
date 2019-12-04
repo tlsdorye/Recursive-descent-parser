@@ -5,6 +5,8 @@ begin
 	input => val => max => min;
 	1 => count;
 
+	input
+
 	loop:
 		input => val;
 		if val < min then val => min fi;

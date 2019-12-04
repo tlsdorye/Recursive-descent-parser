@@ -15,4 +15,3 @@ public:
 	Error(Token token, string procedure);
 	void PrintErrorMessage();
 };
-

@@ -4,7 +4,6 @@ using namespace std;
 
 int main()
 {
-	//TextLexing("lexer_test.txt");
 	Lexing("spl_program.txt");
 	getNextSymbol();
 	try 

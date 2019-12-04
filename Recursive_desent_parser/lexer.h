@@ -13,4 +13,4 @@ void Lexing(const string filepath);
 
 void Matching(string line);
 
-void TextLexing(const string filepath);
+void TestLexing(const string filepath);

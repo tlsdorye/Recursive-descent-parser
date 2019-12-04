@@ -1,4 +1,4 @@
-Simple Programming Language Grammer by EBNF
+Simple Programming Language Grammar by EBNF
 
 <spl_program>	::= <block> '.'
 <block>			::= 'begin' { <dcl> ';' } <st_list> 'end'
